@@ -54,8 +54,8 @@ while(True):
             print(r.text)
 
     if cnt < conf['read_cnt']:
-        pycom.rgbled(0x155119)
+        # pycom.rgbled(0x155119)
         time.sleep_ms(500)
     else:
         cnt = 0
-        deepsleep(conf['deepsleep_seconds']*1000)
+        deepsleep(conf['deepsleep_seconds']*1800000)
