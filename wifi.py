@@ -8,7 +8,7 @@ def connect(conf):
     """
     Execute a wifi connection
     """
-    pycom.rgbled(0x4286f4)
+    # pycom.rgbled(0x4286f4)
     wlan = WLAN(mode=WLAN.STA)
     rtc = machine.RTC()
     nets = wlan.scan()

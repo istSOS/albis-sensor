@@ -40,7 +40,7 @@ temp2 = DS18X20(ow2)
 
 
 def read():
-    pycom.rgbled(0xffa500)
+    # pycom.rgbled(0xffa500)
 
     obs = {
         "": None,
