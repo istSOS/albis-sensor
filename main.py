@@ -54,7 +54,8 @@ while(True):
             print(r.text)
 
     if cnt < conf['read_cnt']:
-        # pycom.rgbled(0x155119)
+        if debug:
+            pycom.rgbled(0x155119)
         time.sleep_ms(500)
     else:
         cnt = 0

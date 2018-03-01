@@ -5,7 +5,8 @@ import time
 
 print("\n\nBooting Albis Sensor")
 pycom.heartbeat(False)
-# pycom.rgbled(0xff0000)
+if debug:
+    pycom.rgbled(0xff0000)
 time.sleep_ms(500)
 
 with open("config.json", 'r') as cf:
