@@ -1,14 +1,32 @@
 {
-    "sensorid": "00caa13a17df11e881ac0800273cbaca",
+    "sensorid": "bdd27ad4276e11e8817a0800273cbaca",
     "server": "http://istsos.org/istsos/wa/istsos/services/albis/operations/fastinsert",
     "debug": true,
-    "wifi": true,
-    "read_cnt": 5,
-    "deepsleep_seconds": 1,
+    "wifi": false,
+    "lora": true,
+    "board": "shield",
+    "read_cnt": 2,
+    "deepsleep_seconds": 10,
+    "type": {
+      "pysense": {
+        "temp1": "P22",
+        "temp2": "P21"
+      },
+      "shield": {
+        "temp1": "P22",
+        "temp2": "P21",
+        "scl": "P9",
+        "sda": "P10"
+      }
+    },
     "config": {
         "wifi": {
             "ssid": "CBMST",
-            "password": "xxxxxxxxxxxxxxxxxxxxxxx"
+            "password": "xxxxxxxxxxxxxxxxx"
+        },
+        "lora": {
+            "key": "notsuchsecretkey",
+            "deviceId": 100
         }
     },
     "observations": [
@@ -21,12 +39,8 @@
             "internal:pressure"
         ],
         [
-            "urn:ogc:def:parameter:x-istsos:1.0:internal:lux:blue",
-            "internal:lux:blue"
-        ],
-        [
-            "urn:ogc:def:parameter:x-istsos:1.0:internal:lux:red",
-            "internal:lux:red"
+            "urn:ogc:def:parameter:x-istsos:1.0:internal:lux",
+            "internal:lux"
         ],
         [
             "urn:ogc:def:parameter:x-istsos:1.0:external:wall:temperature",

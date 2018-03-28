@@ -4,16 +4,16 @@ import ujson
 import time
 
 print("\n\nBooting Albis Sensor")
-pycom.heartbeat(False)
-if debug:
-    pycom.rgbled(0xff0000)
-time.sleep_ms(500)
 
 with open("config.json", 'r') as cf:
     conf = ujson.loads(cf.read())
+    pycom.heartbeat(False)
+    if conf['debug']:
+        pycom.rgbled(0xff0000)
+    time.sleep_ms(500)
     if conf['wifi'] is True:
         import wifi
-        wifi.connect(conf['config']['wifi'])
+        wifi.connect(conf)
         print("Connection done.")
 
 machine.main('main.py')
