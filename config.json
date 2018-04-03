@@ -1,12 +1,12 @@
 {
     "sensorid": "bdd27ad4276e11e8817a0800273cbaca",
     "server": "http://istsos.org/istsos/wa/istsos/services/albis/operations/fastinsert",
-    "debug": true,
+    "debug": false,
     "wifi": false,
     "lora": true,
     "board": "shield",
     "read_cnt": 2,
-    "deepsleep_seconds": 10,
+    "deepsleep_seconds": 1800,
     "type": {
       "pysense": {
         "temp1": "P22",
