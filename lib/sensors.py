@@ -2,13 +2,16 @@ import pycom
 import time
 from machine import I2C
 from machine import Pin
+from machine import ADC
 import ujson
+
 
 
 class Sensors():
 
     def __init__(self, conf):
         self.conf = conf
+
         if conf['board'] == 'shield':
             from onewire import OneWire
             from onewire import DS18X20
@@ -48,6 +51,10 @@ class Sensors():
                 print('scan devices ow1:', ow1_scan)
                 print('scan devices ow2:', ow2_scan)
 
+            # battery pin
+            adc = ADC()
+            self.batt = adc.channel(attn=1, pin=conf['type']['shield']['batt'])
+
         elif conf['board'] == 'shield':
             from pysense import Pysense
             from LIS2HH12 import LIS2HH12
@@ -67,7 +74,6 @@ class Sensors():
             self.si = SI7006A20(py)
             self.lt = LTR329ALS01(py)
             self.li = LIS2HH12(py)
-
 
     def get_obs(self, m):
 
@@ -158,12 +164,24 @@ class Sensors():
 
         # Reading from external sensors
         obs['external:water:temperature'] = temp1.read_temp_async()
+
+        # while (obs['external:water:temperature'] == 85):
+        #    obs['external:water:temperature'] = temp1.read_temp_async()
+
+        time.sleep(1)
         temp1.start_conversion()
 
         obs['external:wall:temperature'] = temp2.read_temp_async()
+        # while (obs['external:wall:temperature'] == 85):
+        #    obs['external:wall:temperature'] = temp1.read_temp_async()
+
+        time.sleep(1)
         temp2.start_conversion()
 
         # battery voltage
-        # obs['sensor:battery'] = py.read_battery_voltage()
+        # obs['sensor:battery'] = self.py.read_battery_voltage()
+
+        val = self.batt()                 # read an analog value
+        obs['sensor:battery'] = val/1000
 
         return obs

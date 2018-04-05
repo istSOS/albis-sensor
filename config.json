@@ -1,5 +1,5 @@
 {
-    "sensorid": "bdd27ad4276e11e8817a0800273cbaca",
+    "sensorid": "79445b8a382111e8abb30800273cbaca",
     "server": "http://istsos.org/istsos/wa/istsos/services/albis/operations/fastinsert",
     "debug": false,
     "wifi": false,
@@ -16,7 +16,8 @@
         "temp1": "P22",
         "temp2": "P21",
         "scl": "P9",
-        "sda": "P10"
+        "sda": "P10",
+        "batt": "P16"
       }
     },
     "config": {
@@ -30,6 +31,10 @@
         }
     },
     "observations": [
+        [
+          "urn:ogc:def:parameter:x-istsos:1.0:internal:temperature",
+          "internal:temperature"
+        ],
         [
             "urn:ogc:def:parameter:x-istsos:1.0:internal:air:humidity",
             "internal:air:humidity"
@@ -49,6 +54,10 @@
         [
             "urn:ogc:def:parameter:x-istsos:1.0:external:water:temperature",
             "external:water:temperature"
+        ],
+        [
+            "urn:ogc:def:parameter:x-istsos:1.0:sensor:battery",
+            "sensor:battery"
         ]
     ]
 }
