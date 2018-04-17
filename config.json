@@ -5,6 +5,7 @@
     "wifi": false,
     "lora": true,
     "board": "shield",
+    "deepsleep_shield": false,
     "read_cnt": 2,
     "deepsleep_seconds": 1800,
     "type": {

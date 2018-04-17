@@ -3,7 +3,11 @@ import ujson
 import time
 import utime
 from lib.sensors import Sensors
-from machine import deepsleep
+if conf['deepsleep_shield']:
+    from lib.deepsleep import DeepSleep
+    ds = DeepSleep()
+else:
+    from machine import deepsleep
 
 conf = {}
 
@@ -91,5 +95,8 @@ while(True):
                 print("error sending data")
 
     print("Going to sleep")
-    deepsleep(conf["deepsleep_seconds"]*1000)
+    if conf['deepsleep_shield']:
+        ds.go_to_sleep(conf["deepsleep_seconds"])
+    else:
+        deepsleep(conf["deepsleep_seconds"]*1000)
     print("Deepsleep ended")
