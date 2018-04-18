@@ -5,6 +5,9 @@ import time
 
 print("\n\nBooting Albis Sensor")
 
+if pycom.wifi_on_boot():  # get the wifi on boot flag
+    pycom.wifi_on_boot(False)   # disable WiFi on boot
+
 with open("config.json", 'r') as cf:
     conf = ujson.loads(cf.read())
     pycom.heartbeat(False)
