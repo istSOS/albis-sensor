@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-
-"""
-OneWire library for MicroPython
-"""
-
 import time
 import machine
 
@@ -42,7 +36,7 @@ class OneWire:
         enable_irq = machine.enable_irq
         pin = self.pin
 
-        pin(1)  # half of the devices don't match CRC without this line
+        pin(1) # half of the devices don't match CRC without this line
         i = machine.disable_irq()
         pin(0)
         sleep_us(1)

@@ -57,7 +57,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None):
     # print(ai)
     addr = ai[0][-1]
 
-    s = usocket.socket()
+    s = usocket.socket(usocket.AF_INET, usocket.SOCK_STREAM)
     try:
         s.connect(addr)
         if proto == "https:":
@@ -99,7 +99,7 @@ def request(method, url, data=None, json=None, headers={}, stream=None):
     except OSError as ex:
         print(str(ex))
         s.close()
-        raise
+        raise ex
 
     resp = Response(s)
     resp.status_code = status

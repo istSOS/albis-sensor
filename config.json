@@ -1,17 +1,41 @@
 {
-    "sensorid": "00caa13a17df11e881ac0800273cbaca",
     "server": "http://istsos.org/istsos/wa/istsos/services/albis/operations/fastinsert",
-    "debug": true,
-    "wifi": true,
-    "read_cnt": 5,
-    "deepsleep_seconds": 1,
+    "debug": false,
+    "sd": true,
+    "LORA_FREQUENCY": 868100000,
+    "LORA_NODE_DR": 5,
+    "read_cnt": 2,
+    "deepsleep_seconds": 3600,
+    "pins": {
+      "temp1": "P3",
+      "temp2": "P20",
+      "scl": "P21",
+      "sda": "P22",
+      "batt": "P16"
+    },
     "config": {
         "wifi": {
-            "ssid": "CBMST",
-            "password": "xxxxxxxxxxxxxxxxxxxxxxx"
+            "ssid": "albis",
+            "password": "albis_123"
+        },
+        "sd": {
+          "file_name": "LOG.txt",
+        },
+        "lora": {
+            "type": "ABP",
+            "app_swkey_abp": "x",
+            "nwk_swkey_abp": "x",
+            "dev_addr_abp": "x",
+            "dev_eui_otaa": "x",
+            "app_eui_otaa": "x",
+            "app_key_otaa": "x"
         }
     },
     "observations": [
+        [
+          "urn:ogc:def:parameter:x-istsos:1.0:internal:temperature",
+          "internal:temperature"
+        ],
         [
             "urn:ogc:def:parameter:x-istsos:1.0:internal:air:humidity",
             "internal:air:humidity"
@@ -19,6 +43,10 @@
         [
             "urn:ogc:def:parameter:x-istsos:1.0:internal:pressure",
             "internal:pressure"
+        ],
+        [
+            "urn:ogc:def:parameter:x-istsos:1.0:internal:lux",
+            "internal:lux"
         ],
         [
             "urn:ogc:def:parameter:x-istsos:1.0:internal:lux:blue",
@@ -35,6 +63,15 @@
         [
             "urn:ogc:def:parameter:x-istsos:1.0:external:water:temperature",
             "external:water:temperature"
+        ],
+        [
+            "urn:ogc:def:parameter:x-istsos:1.0:sensor:battery",
+            "sensor:battery"
+        ],
+        ,
+        [
+            "urn:ogc:def:parameter:x-istsos:1.0:sensor:sd",
+            "sensor:sd"
         ]
     ]
 }

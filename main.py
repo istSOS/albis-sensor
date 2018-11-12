@@ -2,61 +2,95 @@ import pycom
 import ujson
 import time
 import utime
-import sensors
+from machine import Pin, deepsleep
+import os
 from machine import deepsleep
+from lib.sensors import Sensors
+from lib.loranode import LoraNode
 
 conf = {}
+
 with open("config.json", 'r') as cf:
     conf = ujson.loads(cf.read())
 
-if conf['wifi'] is True:
-    import lib.urequests as requests
-
-cnt = 0
-
 print("Starting main loop..")
 
+cnt = 0
 # Start monitoring
 while(True):
-    now = utime.gmtime(utime.time())
-    cnt += 1
-    obs = sensors.read()
-    print('{}/{}'.format(cnt, conf['read_cnt']))
-    # Send data after 20 measurements
-    if cnt == conf['read_cnt']:
-        if conf['wifi'] is True:
-            print("Sending via WIFI")
-            data = "{};{}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}+0000".format(
-                conf['sensorid'],
-                now[0],
-                now[1],
-                now[2],
-                now[3],
-                now[4],
-                now[5]
-            )
-            values = []
-            for ob in conf['observations']:
-                values.append(
-                    "{}".format(obs[ob[1]])
-                )
-            data = '{},{}'.format(
-                data,
-                ",".join(values)
-            )
-            print(data)
-            # avoid in the future measurements
-            utime.sleep_ms(10000)
-            r = requests.post(
-                conf['server'],
-                data=data
-            )
-            print(r.text)
+    machine.idle()
+    msg = ""
 
-    if cnt < conf['read_cnt']:
-        if debug:
-            pycom.rgbled(0x155119)
-        time.sleep_ms(500)
+    sensors = Sensors(conf)
+    values = []
+    obs = sensors.get_obs(conf['read_cnt'])
+
+    for ob in conf['observations']:
+        if ob[1] in obs:
+            if conf["debug"]:
+                print('{} = {}'.format(
+                    ob[0], obs[ob[1]]
+                ))
+            values.append(
+                "{}".format(obs[ob[1]])
+            )
+
+    msg = ",".join(values)
+
+    data = msg
+
+    print("Sending via Lora")
+    print(data)
+
+    if conf['sd']:
+        # write data on SD card
+        try:
+            sd = SD()
+            print('SD card initialized')
+            print('Saving data...')
+            os.mount(sd, '/sd')
+            if conf['debug']:
+                print('SD card mounted')
+            # check the content
+            file_name = conf['config']['sd']['file_name']
+
+            file_path = '/sd/{}'.format(file_name)
+            mode = 'w'
+            for item in os.listdir('/sd'):
+                if item == file_name:
+                    mode = 'a'
+
+            # try some standard file operations
+            with open(file_path, mode) as f:
+                f.write('{}\n'.format(data))
+                f.close()
+
+            os.unmount('/sd')
+            if conf['debug']:
+                print('SD card unmounted')
+            print('Data saved')
+        except Exception as e:
+            print('No SD card inserted')
+            print('Data NOT saved')
+            print(str(e))
+
+
+    try:
+        if conf['debug'] is True:
+            pycom.rgbled(0xff0000)
+        lora = LoraNode(conf)
+        lora.send_msg(data)
+    except Exception as e:
+        print(str(e))
+
+    if conf['debug'] is True:
+        pycom.rgbled(0x000000)
+        cnt += 1
+        print("Sleep: %s" % cnt)
+        time.sleep(conf["deepsleep_seconds"])
     else:
-        cnt = 0
-        deepsleep(conf['deepsleep_seconds']*1800000)
+        print("Going to sleep")
+
+        deepsleep(conf["deepsleep_seconds"]*1000)
+
+        print("Deepsleep ended")
