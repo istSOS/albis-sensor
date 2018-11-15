@@ -21,9 +21,9 @@
         },
         "lora": {
             "type": "OTAA",
-            "app_swkey_abp": "x",
-            "nwk_swkey_abp": "x",
-            "dev_addr_abp": "x",
+            "app_swkey_abp": null,
+            "nwk_swkey_abp": null,
+            "dev_addr_abp": null,
             "dev_eui_otaa": "70b3d549966e3506",
             "app_eui_otaa": "F03D29ac71000001",
             "app_key_otaa": "11B0282A189B75B0B4D2D8C7FA38548B"
