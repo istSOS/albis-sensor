@@ -40,14 +40,6 @@ class LoraNode():
                 device_class=LoRa.CLASS_A
             )
             print("First join")
-            # remove all the non-default channels
-            for i in range(3, 16):
-                self.lora.remove_channel(i)
-
-            # set the 3 default channels to the same frequency
-            self.lora.add_channel(0, frequency=self.conf['LORA_FREQUENCY'], dr_min=0, dr_max=5)
-            self.lora.add_channel(1, frequency=self.conf['LORA_FREQUENCY'], dr_min=0, dr_max=5)
-            self.lora.add_channel(2, frequency=self.conf['LORA_FREQUENCY'], dr_min=0, dr_max=5)
 
             lora_type =  self.conf['config']['lora']['type']
             if lora_type == "ABP":

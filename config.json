@@ -2,10 +2,8 @@
     "server": "http://istsos.org/istsos/wa/istsos/services/albis/operations/fastinsert",
     "debug": false,
     "sd": true,
-    "LORA_FREQUENCY": 868100000,
-    "LORA_NODE_DR": 5,
     "read_cnt": 2,
-    "deepsleep_seconds": 3600,
+    "deepsleep_seconds": 5,
     "pins": {
       "temp1": "P3",
       "temp2": "P20",
@@ -22,13 +20,13 @@
           "file_name": "LOG.txt",
         },
         "lora": {
-            "type": "ABP",
+            "type": "OTAA",
             "app_swkey_abp": "x",
             "nwk_swkey_abp": "x",
             "dev_addr_abp": "x",
-            "dev_eui_otaa": "x",
-            "app_eui_otaa": "x",
-            "app_key_otaa": "x"
+            "dev_eui_otaa": "70b3d549966e3506",
+            "app_eui_otaa": "F03D29ac71000001",
+            "app_key_otaa": "11B0282A189B75B0B4D2D8C7FA38548B"
         }
     },
     "observations": [
