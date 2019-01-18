@@ -2,8 +2,9 @@
     "server": "http://istsos.org/istsos/wa/istsos/services/albis/operations/fastinsert",
     "debug": false,
     "sd": true,
+    "LORA_NODE_DR": 5,
     "read_cnt": 2,
-    "deepsleep_seconds": 5,
+    "deepsleep_seconds": 3600,
     "pins": {
       "temp1": "P3",
       "temp2": "P20",
@@ -24,9 +25,9 @@
             "app_swkey_abp": null,
             "nwk_swkey_abp": null,
             "dev_addr_abp": null,
-            "dev_eui_otaa": "70b3d549966e3506",
-            "app_eui_otaa": "F03D29ac71000001",
-            "app_key_otaa": "11B0282A189B75B0B4D2D8C7FA38548B"
+            "dev_eui_otaa": null,
+            "app_eui_otaa": "f03d29ac71000001",
+            "app_key_otaa": "71a0bd778ae3ceafeb64826f92e30552"
         }
     },
     "observations": [

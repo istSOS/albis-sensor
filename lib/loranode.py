@@ -37,7 +37,8 @@ class LoraNode():
                 mode=LoRa.LORAWAN,
                 adr=True,
                 tx_retries=3,
-                device_class=LoRa.CLASS_A
+                device_class=LoRa.CLASS_A,
+                sf=12
             )
             print("First join")
 
@@ -64,7 +65,7 @@ class LoraNode():
                 app_key_otaa = binascii.unhexlify(
                     self.conf['config']['lora']['app_key_otaa']
                 )
-                if self.conf['config']['lora']['dev_eui_otaa']:
+                if self.conf['config']['lora']['dev_eui_otaa'] is not None:
                     dev_eui_otaa = binascii.unhexlify(
                         self.conf['config']['lora']['dev_eui_otaa']
                     )
@@ -85,6 +86,9 @@ class LoraNode():
 
             # create a LoRa socket
             self.lora_sock = socket.socket(socket.AF_LORA, socket.SOCK_RAW)
+
+            # # selecting confirmed type of messages
+            # self.lora_sock.setsockopt(socket.SOL_LORA, socket.SO_CONFIRMED, True)
 
             # set the LoRaWAN data rate
             self.lora_sock.setsockopt(socket.SOL_LORA, socket.SO_DR, self.conf['LORA_NODE_DR'])
@@ -107,13 +111,16 @@ class LoraNode():
             # create a LoRa socket
             self.lora_sock = socket.socket(socket.AF_LORA, socket.SOCK_RAW)
 
+            # # set the LoRaWAN data rate
+            # self.lora_sock.setsockopt(socket.SOL_LORA, socket.SO_CONFIRMED, True)
+
             # set the LoRaWAN data rate
             self.lora_sock.setsockopt(socket.SOL_LORA, socket.SO_DR, self.conf['LORA_NODE_DR'])
             self.lora_sock.setblocking(True)
         print("Joined")
 
     # Method to send messages
-    def send_msg(self, msg):
+    def send_msg(self, msg, chrono):
         pkg = struct.pack(
             _LORA_PKG_FORMAT % len(msg),
             len(msg),
@@ -121,6 +128,13 @@ class LoraNode():
         )
 
         # send some data
+        prob = 'high'
+        while self.lora.ischannel_free(-110):
+            if chrono.read() > 20:
+                prob = 'low'
+                break
+            else:
+                continue
         self.lora_sock.send(pkg)
 
         self.lora_sock.setblocking(False)
@@ -129,3 +143,4 @@ class LoraNode():
         print(data)
         self.lora.nvram_save()
         pycom.nvs_set('loraSaved', 1)
+        return { 'prob': prob, 'stats': self.lora.stats()}

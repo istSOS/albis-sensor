@@ -153,7 +153,7 @@ class Sensors():
             temp2.start_conversion()
 
             val = self.batt()  # read an analog value
-            obs['sensor:battery'] = round(val/1000, 2)
+            obs['sensor:battery'] = round(val/940, 2)
 
         self.i2c.deinit()
         Pin(

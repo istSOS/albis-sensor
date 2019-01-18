@@ -8,6 +8,14 @@ from machine import deepsleep
 from lib.sensors import Sensors
 from lib.loranode import LoraNode
 
+# check time
+from machine import Timer
+import time
+
+chrono = Timer.Chrono()
+
+chrono.start()
+
 conf = {}
 
 with open("config.json", 'r') as cf:
@@ -42,6 +50,15 @@ while(True):
     print("Sending via Lora")
     print(data)
 
+    try:
+        if conf['debug'] is True:
+            pycom.rgbled(0xff0000)
+        lora = LoraNode(conf)
+        stats = lora.send_msg(data, chrono)
+        print(stats)
+    except Exception as e:
+        print(str(e))
+
     if conf['sd']:
         # write data on SD card
         try:
@@ -62,7 +79,7 @@ while(True):
 
             # try some standard file operations
             with open(file_path, mode) as f:
-                f.write('{}\n'.format(data))
+                f.write('{},{},{}\n'.format(stats['prob'], stats['stats'], data))
                 f.close()
 
             os.unmount('/sd')
@@ -74,15 +91,6 @@ while(True):
             print('Data NOT saved')
             print(str(e))
 
-
-    try:
-        if conf['debug'] is True:
-            pycom.rgbled(0xff0000)
-        lora = LoraNode(conf)
-        lora.send_msg(data)
-    except Exception as e:
-        print(str(e))
-
     if conf['debug'] is True:
         pycom.rgbled(0x000000)
         cnt += 1
@@ -90,7 +98,13 @@ while(True):
         time.sleep(conf["deepsleep_seconds"])
     else:
         print("Going to sleep")
-
-        deepsleep(conf["deepsleep_seconds"]*1000)
-
+        secs_passed = chrono.read() + 4
+        chrono.stop()
+        chrono.reset()
+        if secs_passed < conf["deepsleep_seconds"]:
+            deepsleep(
+                (conf["deepsleep_seconds"]-int(secs_passed))*1000
+            )
+        else:
+            deepsleep(1*1000)
         print("Deepsleep ended")
