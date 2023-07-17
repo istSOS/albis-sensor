@@ -1,13 +1,12 @@
 {
     "server": "http://istsos.org/istsos/wa/istsos/services/albis/operations/fastinsert",
-    "name": "SENSOR_011",
-    "debug": true,
+    "debug": false,
     "sd": true,
     "transmission": "wifi",
     "LORA_NODE_DR": 5,
     "read_cnt": 2,
-    "deepsleep_seconds": 15,
-    "frequency": 1,
+    "deepsleep_seconds": 1800,
+    "frequency": 5,
     "pins": {
       "temp1": "P3",
       "temp2": "P20",
@@ -17,11 +16,11 @@
     },
     "config": {
         "wifi": {
-            "ssid": "albis",
+            "ssid": "polluce",
             "password": "albis_123"
         },
         "sd": {
-          "file_name": "LOG.txt"
+          "file_name": "LOG.txt",
         },
         "lora": {
             "type": "OTAA",
@@ -34,10 +33,6 @@
         }
     },
     "observations": [
-        [
-            "urn:ogc:def:parameter:x-istsos:1.0:time:iso8601",
-            "Time"
-        ],
         [
           "urn:ogc:def:parameter:x-istsos:1.0:internal:temperature",
           "internal:temperature"

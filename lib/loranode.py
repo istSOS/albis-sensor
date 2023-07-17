@@ -129,8 +129,8 @@ class LoraNode():
 
         # send some data
         prob = 'high'
-        while self.lora.ischannel_free(-110):
-            if chrono.read() > 20:
+        while self.lora.ischannel_free(-105):
+            if chrono.read() > 15:
                 prob = 'low'
                 break
             else:
