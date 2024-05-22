@@ -1,0 +1,9 @@
+WIFI_SSID = "albis"
+WIFI_PWD = "albis_123"
+FTP_USER = "albis"
+FTP_PASSWORD = "albis_123"
+FREQUENCY = 60
+START_DATE = "2024-02-01T10:00:00+01:00"
+MIN_10 = 10
+MIN_30 = 30
+MIN_60 = 60
