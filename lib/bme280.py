@@ -2,7 +2,7 @@ from machine import I2C
 import time
 
 # BME280 default address.
-BME280_I2CADDR = 0x76 # 0x76
+BME280_I2CADDR = 0x76  # 0x76
 
 # Operating Modes
 BME280_OSAMPLE_1 = 1
@@ -83,14 +83,14 @@ class Device:
         return int.from_bytes(
             self._i2c.readfrom(
                 self._address, 1), 'little'
-                ) & 0xFF
+        ) & 0xFF
 
     def readU8(self, register):
         """Read an unsigned byte from the specified register."""
         return int.from_bytes(
             self._i2c.readfrom_mem(
                 self._address, register, 1), 'little'
-                ) & 0xFF
+        ) & 0xFF
 
     def readS8(self, register):
         """Read a signed byte from the specified register."""
@@ -104,7 +104,7 @@ class Device:
         specified endianness (default little endian, or least significant byte
         first)."""
         result = int.from_bytes(
-            self._i2c.readfrom_mem(self._address, register, 2),'little') & 0xFFFF
+            self._i2c.readfrom_mem(self._address, register, 2), 'little') & 0xFFFF
         if not little_endian:
             result = ((result << 8) & 0xFF00) + (result >> 8)
         return result
@@ -271,7 +271,7 @@ class BME280:
         ti = t // 100
         td = t - ti * 100
         return "{}.{:02d}".format(ti, td)
-        #return "{}.{:02d}C".format(ti, td)
+        # return "{}.{:02d}C".format(ti, td)
 
     @property
     def pressure(self):
@@ -279,7 +279,7 @@ class BME280:
         p = self.read_pressure() // 256
         pi = p // 100
         pd = p - pi * 100
-        #return "{}.{:02d}hPa".format(pi, pd)
+        # return "{}.{:02d}hPa".format(pi, pd)
         return "{}.{:02d}".format(pi, pd)
 
     @property
@@ -288,5 +288,5 @@ class BME280:
         h = self.read_humidity()
         hi = h // 1024
         hd = h * 100 // 1024 - hi * 100
-        #return "{}.{:02d}%".format(hi, hd)
+        # return "{}.{:02d}%".format(hi, hd)
         return "{}.{:02d}".format(hi, hd)
