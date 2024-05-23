@@ -1,6 +1,7 @@
 import time
 import machine
 
+
 class OneWire:
     CMD_SEARCHROM = const(0xf0)
     CMD_READROM = const(0x33)
@@ -36,7 +37,7 @@ class OneWire:
         enable_irq = machine.enable_irq
         pin = self.pin
 
-        pin(1) # half of the devices don't match CRC without this line
+        pin(1)  # half of the devices don't match CRC without this line
         i = machine.disable_irq()
         pin(0)
         sleep_us(1)
@@ -69,7 +70,7 @@ class OneWire:
         pin(value)
         sleep_us(60)
         pin(1)
-        sleep_us(1)
+        # sleep_us(1)
         machine.enable_irq(i)
 
     def write_byte(self, value):
@@ -136,10 +137,10 @@ class OneWire:
             for bit in range(8):
                 b = self.read_bit()
                 if self.read_bit():
-                    if b: # there are no devices or there is an error on the bus
+                    if b:  # there are no devices or there is an error on the bus
                         return None, 0
                 else:
-                    if not b: # collision, two devices with different bit meaning
+                    if not b:  # collision, two devices with different bit meaning
                         if diff > i or ((l_rom[byte] & (1 << bit)) and diff != i):
                             b = 1
                             next_diff = i
@@ -150,15 +151,17 @@ class OneWire:
             rom[byte] = r_b
         return rom, next_diff
 
+
 class DS18X20(object):
     def __init__(self, onewire):
         self.ow = onewire
-        self.roms = [rom for rom in self.ow.scan() if rom[0] == 0x10 or rom[0] == 0x28]
+        self.roms = [rom for rom in self.ow.scan() if rom[0] ==
+                     0x10 or rom[0] == 0x28]
         self.fp = True
         try:
             1/1
         except TypeError:
-            self.fp = False # floatingpoint not supported
+            self.fp = False  # floatingpoint not supported
 
     def isbusy(self):
         """
@@ -173,9 +176,9 @@ class DS18X20(object):
         Pass the 8-byte bytes object with the ROM of the specific device you want to read.
         If only one DS18x20 device is attached to the bus you may omit the rom parameter.
         """
-        if (rom==None) and (len(self.roms)>0):
-            rom=self.roms[0]
-        if rom!=None:
+        if (rom == None) and (len(self.roms) > 0):
+            rom = self.roms[0]
+        if rom != None:
             rom = rom or self.roms[0]
             ow = self.ow
             ow.reset()
@@ -189,9 +192,9 @@ class DS18X20(object):
         """
         if self.isbusy():
             return None
-        if (rom==None) and (len(self.roms)>0):
-            rom=self.roms[0]
-        if rom==None:
+        if (rom == None) and (len(self.roms) > 0):
+            rom = self.roms[0]
+        if rom == None:
             return None
         else:
             ow = self.ow
@@ -210,8 +213,10 @@ class DS18X20(object):
         if rom0 == 0x10:
             if temp_msb != 0:
                 # convert negative number
-                temp_read = temp_lsb >> 1 | 0x80  # truncate bit 0 by shifting, fill high bit with 1.
-                temp_read = -((~temp_read + 1) & 0xff) # now convert from two's complement
+                # truncate bit 0 by shifting, fill high bit with 1.
+                temp_read = temp_lsb >> 1 | 0x80
+                # now convert from two's complement
+                temp_read = -((~temp_read + 1) & 0xff)
             else:
                 temp_read = temp_lsb >> 1  # truncate bit 0 by shifting
             count_remain = data[6]
@@ -226,7 +231,7 @@ class DS18X20(object):
                 temp = (temp_msb << 8 | temp_lsb) / 16
             else:
                 temp = (temp_msb << 8 | temp_lsb) * 100 // 16
-            if (temp_msb & 0xf8) == 0xf8: # for negative temperature
+            if (temp_msb & 0xf8) == 0xf8:  # for negative temperature
                 temp -= 0x1000
             return temp
         else:
