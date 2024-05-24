@@ -230,6 +230,7 @@ elif machine.reset_cause() == PWRON_RESET:
         pycom.rgbled(0x00FF)
     print("\t> Device powered On")
 elif machine.reset_cause() == WDT_RESET:
+    first_power_on = False
     print("\t> Waked-up from WDT reset")
 else:
     print("\t> Other")
