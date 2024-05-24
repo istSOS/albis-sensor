@@ -170,7 +170,9 @@ pycom.nvs_set("freq", FREQUENCY)
 ######################
 # BOOTING MOTIVATION
 print("> Boot motivation")
+first_power_on = True
 if machine.reset_cause() == DEEPSLEEP_RESET:
+    first_power_on = False
     if machine.wake_reason()[0] == PIN_WAKE:
         print("\t> Is alarm occurred?: {}".format(ds3231.alarm1.__call__()))
         if not ds3231.alarm1.__call__():
@@ -193,7 +195,8 @@ if machine.reset_cause() == DEEPSLEEP_RESET:
                 # wait 5 minutes before resetting the device
                 c = 0
                 print("\t> Connection opened", end="")
-                pycom.rgbled(0x007f00)
+                # pycom.rgbled(0x007f00)
+                pycom.rgbled(0x00FF)
                 while c < 300:
                     print(".", end="")
                     time.sleep(1)
@@ -223,7 +226,8 @@ if machine.reset_cause() == DEEPSLEEP_RESET:
     else:
         print("\t> Coming from deepsleep")
 elif machine.reset_cause() == PWRON_RESET:
-    pycom.rgbled(0x00FF)
+    if not first_power_on:
+        pycom.rgbled(0x00FF)
     print("\t> Device powered On")
 elif machine.reset_cause() == WDT_RESET:
     print("\t> Waked-up from WDT reset")
@@ -231,19 +235,30 @@ else:
     print("\t> Other")
 
 print("> Checking datetime")
-if datetime_now[0] < 2023:
+if first_power_on or datetime_now[0] < 2024:
     pycom.rgbled(0x7f7f00)
     print("\t> RTC need to be synced")
     # init WiFi STA
     wlan = WLAN(mode=WLAN.STA)
     print("\t> Checking {} WIFI".format(WIFI_SSID), end='')
-    while datetime_now[0] < 2023:
+    not_synced = True
+    while datetime_now[0] < 2024 or not_synced:
         nets = wlan.scan()
         print(".", end='')
         for net in nets:
             if net.ssid == WIFI_SSID:
                 try:
-                    wlan.connect(WIFI_SSID, timeout=60000)
+                    if WIFI_PWD:
+                        wlan.connect(
+                            timeout=60000,
+                            ssid=WIFI_SSID,
+                            auth=(WLAN.WPA2, WIFI_PWD)
+                        )
+                    else:
+                        wlan.connect(
+                            WIFI_SSID,
+                            timeout=60000
+                        )
                     while not wlan.isconnected():
                         machine.idle()  # save power while waiting
                     print('\t> WLAN connection succeeded!')
@@ -276,12 +291,14 @@ if datetime_now[0] < 2023:
                     )
                     pycom.nvs_erase("dt")
                     pycom.nvs_set("dt", dt)
+                    not_synced = False
                 except Exception as e:
                     print("Error: {}".format(str(e)))
                     pass
         time.sleep(2)
     wlan.deinit()
     pycom.rgbled(0x007f00)
+
 # Turn-off heartbeat
 if pycom.heartbeat() == True:
     pycom.heartbeat(False)
