@@ -145,6 +145,8 @@ try:
                     FTP_USER = conf["FTP_USER"]
                 if "FTP_PASSWORD" in conf.keys():
                     FTP_PASSWORD = conf["FTP_PASSWORD"]
+                if "UPDATE_DATE" in conf.keys():
+                    UPDATE_DATE = int(conf["UPDATE_DATE"])
                 if "FREQUENCY" in conf.keys():
                     try:
                         if int(conf["FREQUENCY"]) in [MIN_10, MIN_30, MIN_60]:
@@ -170,9 +172,8 @@ pycom.nvs_set("freq", FREQUENCY)
 ######################
 # BOOTING MOTIVATION
 print("> Boot motivation")
-first_power_on = True
 if machine.reset_cause() == DEEPSLEEP_RESET:
-    first_power_on = False
+    UPDATE_DATE = 0
     if machine.wake_reason()[0] == PIN_WAKE:
         print("\t> Is alarm occurred?: {}".format(ds3231.alarm1.__call__()))
         if not ds3231.alarm1.__call__():
@@ -226,17 +227,15 @@ if machine.reset_cause() == DEEPSLEEP_RESET:
     else:
         print("\t> Coming from deepsleep")
 elif machine.reset_cause() == PWRON_RESET:
-    if not first_power_on:
-        pycom.rgbled(0x00FF)
+    pycom.rgbled(0x00FF)
     print("\t> Device powered On")
 elif machine.reset_cause() == WDT_RESET:
-    first_power_on = False
     print("\t> Waked-up from WDT reset")
 else:
     print("\t> Other")
 
 print("> Checking datetime")
-if first_power_on or datetime_now[0] < 2024:
+if UPDATE_DATE or datetime_now[0] < 2024:
     pycom.rgbled(0x7f7f00)
     print("\t> RTC need to be synced")
     # init WiFi STA
