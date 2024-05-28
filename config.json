@@ -3,5 +3,6 @@
   "WIFI_PWD": "albis_123",
   "FTP_USER": "admin",
   "FTP_PASSWORD": "admin",
+  "UPDATE_DATE": 1,
   "FREQUENCY": 10
 }
